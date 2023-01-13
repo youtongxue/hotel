@@ -2,18 +2,19 @@ package cn.singlestep.hotel.service.impl;
 
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.IdcardUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.singlestep.hotel.exception.GlobalException;
 import cn.singlestep.hotel.exception.GlobalExceptionEnum;
-import cn.singlestep.hotel.pojo.entity.History;
-import cn.singlestep.hotel.pojo.entity.HotelOrder;
-import cn.singlestep.hotel.pojo.entity.Room;
-import cn.singlestep.hotel.pojo.entity.WorkOrder;
+import cn.singlestep.hotel.pojo.entity.*;
 import cn.singlestep.hotel.repository.OrderRepository;
 import cn.singlestep.hotel.repository.WorkOrderRepository;
+import cn.singlestep.hotel.service.EmailService;
 import cn.singlestep.hotel.service.HistoryService;
 import cn.singlestep.hotel.service.OrderService;
 import cn.singlestep.hotel.service.RoomService;
+import cn.singlestep.hotel.util.VerifyEmail;
+import cn.singlestep.hotel.util.VerifyPhone;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -34,6 +35,8 @@ public class OrderImpl implements OrderService {
     private HistoryService historyService;
     @Resource
     private WorkOrderRepository workOrderRepository;
+    @Resource
+    private EmailService emailService;
 
 
     /**
@@ -51,8 +54,18 @@ public class OrderImpl implements OrderService {
         Room room = roomService.findByRoomId(order.getRoomId());
 
         //校验身份证长度
-        if (order.getPersonId().length() != 18) {
-            throw new GlobalException(GlobalExceptionEnum.PERSON_ID_LENGTH_ERROR);
+        if (!IdcardUtil.isValidCard(order.getPersonId())) {
+            throw new GlobalException(GlobalExceptionEnum.PERSON_ID_ERROR);
+        }
+
+        // 校验手机号
+        if (!VerifyPhone.check(order.getPersonPhone())) {
+            throw new GlobalException(GlobalExceptionEnum.PHONE_ERROR);
+        }
+
+        // 校验邮箱
+        if (!VerifyEmail.verify(order.getPersonEmail())) {
+            throw new GlobalException(GlobalExceptionEnum.EMAIL_ERROR);
         }
 
         // 存在此用户订单
@@ -74,6 +87,12 @@ public class OrderImpl implements OrderService {
         int roomPrice = Integer.parseInt(roomService.findByRoomId(roomId).getPrice());
         order.setOrderPrice(String.valueOf((betweenDay + 1) * roomPrice));
 
+        // Email 发送密码信息
+        MailRequest mailRequest = new MailRequest();
+        mailRequest.setSubject("Hotel酒店");
+        mailRequest.setSendTo(order.getPersonEmail());
+        mailRequest.setContent(order.getPersonName() + " 您好! 欢迎入住Hotel酒店\n 您的账号为您的身份证号，您的密码为：" + order.getPassword() + "\n 酒店用户服务网址：https://singlestep.cn");
+        emailService.sendSimpleMail(mailRequest);
         // 更新HotelOrder表
         orderRepository.save(order);
 
@@ -148,8 +167,8 @@ public class OrderImpl implements OrderService {
     @Override
     public HotelOrder findByPersonId(String personId) {
         //校验身份证长度
-        if (personId.length() != 18) {
-            throw new GlobalException(GlobalExceptionEnum.PERSON_ID_LENGTH_ERROR);
+        if (!IdcardUtil.isValidCard(personId)) {
+            throw new GlobalException(GlobalExceptionEnum.PERSON_ID_ERROR);
         }
 
         /**

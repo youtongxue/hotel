@@ -22,7 +22,7 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
      * */
     @Modifying
     @Transactional
-    @Query(value = "update Room room set room.state =?1, room.order_id =?2 where room.room_id = ?3",nativeQuery = true)
+    @Query(value = "update room room set room.state =?1, room.order_id =?2 where room.room_id = ?3",nativeQuery = true)
     void updateByRoomId(String roomState, Long orderId, Long roomId);
 
     /**

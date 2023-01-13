@@ -1,5 +1,6 @@
 package cn.singlestep.hotel.service.impl;
 
+import cn.hutool.core.util.IdcardUtil;
 import cn.singlestep.hotel.exception.GlobalException;
 import cn.singlestep.hotel.exception.GlobalExceptionEnum;
 import cn.singlestep.hotel.pojo.entity.History;
@@ -34,8 +35,8 @@ public class HistoryImpl implements HistoryService {
 
     @Override
     public List<History> findAllByPersonId(String personId) {
-        if (personId.length() != 18) {
-            throw new GlobalException(GlobalExceptionEnum.PERSON_ID_LENGTH_ERROR);
+        if (!IdcardUtil.isValidCard(personId)) {
+            throw new GlobalException(GlobalExceptionEnum.PERSON_ID_ERROR);
         }
 
         return historyRepository.findAllByPersonId(personId);

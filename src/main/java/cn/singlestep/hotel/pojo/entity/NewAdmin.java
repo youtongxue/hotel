@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -16,7 +17,7 @@ import java.util.Date;
  * @date 2023/1/10 15:51
  */
 @Data
-public class NewAdmin {
+public class NewAdmin implements Serializable {
     private Long adminId;
     private String adminName; // 管理员名
     private String password; // 密码

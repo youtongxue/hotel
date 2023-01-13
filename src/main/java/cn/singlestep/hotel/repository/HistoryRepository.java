@@ -28,7 +28,7 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
      * */
     @Modifying
     @Transactional
-    @Query(value = "update History history set history.app_raise =?1, history.app_raise_date =?2 where history.order_id = ?3",nativeQuery = true)
+    @Query(value = "update history history set history.app_raise =?1, history.app_raise_date =?2 where history.order_id = ?3",nativeQuery = true)
     void updateByOrderId(String appRaise, Date appRaiseDate, Long orderId);
 
     /**

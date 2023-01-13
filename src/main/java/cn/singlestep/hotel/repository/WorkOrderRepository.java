@@ -34,7 +34,7 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, Long> {
      * */
     @Modifying
     @Transactional
-    @Query(value = "update Work_Order workorder set workorder.state =?1 where workorder.work_order_id = ?2",nativeQuery = true)
+    @Query(value = "update work_order workorder set workorder.state =?1 where workorder.work_order_id = ?2",nativeQuery = true)
     void updateByWorkOrderState(String workOrderState, Long workOrderId);
 
     /**

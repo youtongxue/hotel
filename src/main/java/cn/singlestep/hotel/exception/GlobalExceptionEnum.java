@@ -27,7 +27,7 @@ public enum GlobalExceptionEnum implements BaseError{
     NO_USER_ERROR("1007", "无此用户信息"),
     PASSWORD_ERROR("1008", "密码错误"),
     LOGIN_OTHER_ERROR("1009", "登录未知错误"),
-    PERSON_ID_LENGTH_ERROR("1010", "身份证长度错误"),
+    PERSON_ID_ERROR("1010", "身份证格式错误"),
     NOT_SUPER_ERROR("1011", "无权限"),
     ADMIN_TYPE_ERROR("1012", "管理员权限值错误"),
     USER_NAME_ERROR("1013", "用户名长度错误"),
@@ -36,6 +36,8 @@ public enum GlobalExceptionEnum implements BaseError{
     HAVE_NO_PERSON_ORDER("1016", "无此用户订单"),
     HAVE_NO_HISTORY_ORDER("1017", "无此历史订单"),
     HAVE_NO_ORDER_ORDER("1018", "无此订单信息"),
+    EMAIL_ERROR("1019", "邮箱格式错误"),
+    PHONE_ERROR("1020", "手机号格式错误"),
     ;
 
 
